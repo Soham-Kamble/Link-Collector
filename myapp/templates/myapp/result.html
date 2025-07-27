@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Link Collector</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-main: #f1f3f9;
+      --bg-card: #fff;
+      --text-main: #1a1a1a;
+      --text-muted: #6c757d;
+      --accent: #ff4f87;
+      --accent-hover: #e53e70;
+      --border-light: #dee2e6;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .header-title {
+      font-size: 2.75rem;
+      background: linear-gradient(135deg, #ff4f87, #ff99bb);
+      background-clip: ;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: none;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .form-control {
+      border-radius: 10px;
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 0.25rem rgba(255, 79, 135, 0.25);
+    }
+
+    .btn-accent {
+      background-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      transition: background 0.3s ease, transform 0.1s ease;
+    }
+
+    .btn-accent:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-danger:hover {
+      transform: translateY(-2px);
+    }
+
+    .table thead {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+
+    .table tbody tr:hover {
+      background-color: #fdfdfd;
+    }
+
+    .badge-id {
+      background-color: #e9ecef;
+      color: #495057;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.85rem;
+    }
+
+    .link {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+      color: var(--accent-hover);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 3rem 1rem;
+    }
+
+    .empty-state i {
+      color: var(--accent);
+    }
+
+    @media (max-width: 576px) {
+      .header-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container py-5">
+    <div class="text-center mb-4">
+      <h1 class="header-title">🔗 Link Collector</h1>
+      <p class="text-muted">Extract and view all links from any website</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card mb-5">
+      <form method="POST" action="/" class="row g-3 align-items-end">
+        {% csrf_token %}
+        <div class="col-md-8 col-sm-12">
+          <input type="url" name="site" class="form-control form-control-lg" placeholder="https://example.com" required>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <button type="submit" class="btn btn-accent w-100 btn-lg">
+            <i class="fas fa-magnifying-glass me-2"></i> Scrape
+          </button>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <a href="/delete" class="btn btn-outline-danger btn-lg w-100">
+            <i class="fas fa-trash me-2"></i> Clear
+          </a>
+        </div>
+      </form>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger text-center">{{ error }}</div>
+    {% endif %}
+
+    <!-- Results Table -->
+    <div class="card">
+      <h4 class="mb-3">📄 Extracted Links</h4>
+      {% if data %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th style="width: 10%;">ID</th>
+              <th style="width: 30%;">Name</th>
+              <th style="width: 50%;">Link</th>
+              <th class="text-center" style="width: 10%;">Open</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for link in data %}
+            <tr>
+              <td><span class="badge-id">{{ link.id }}</span></td>
+              <td>{{ link.name|default:"(No text)" }}</td>
+              <td>
+                <a href="{{ link.address }}" target="_blank" class="link d-inline-block text-truncate" style="max-width: 400px;">
+                  {{ link.address }}
+                </a>
+              </td>
+              <td class="text-center">
+                <a href="{{ link.address }}" target="_blank" class="btn btn-sm btn-outline-dark">
+                  <i class="fas fa-arrow-up-right-from-square"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-link fa-2x mb-3"></i>
+        <p>No links scraped yet. Enter a website URL above to begin.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
