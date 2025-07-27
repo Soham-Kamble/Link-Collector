@@ -1,6 +1,6 @@
 # 🔗 Django Link Collector / Web Scraper
 
-This is a Django 5.2.4 web application that scrapes hyperlinks from a user-provided URL. When a link is submitted through the frontend, the backend crawler processes the page, extracts all valid hyperlinks (`<a href="...">`), and displays them cleanly in the UI.
+This is a Django web application that scrapes hyperlinks from a user-provided URL. When a link is submitted through the frontend, the backend crawler processes the page, extracts all valid hyperlinks (`<a href="...">`), and displays them cleanly in the UI.
 
 ## 🚀 Features
 
