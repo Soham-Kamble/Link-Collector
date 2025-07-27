@@ -20,8 +20,8 @@ This is a Django web application that scrapes hyperlinks from a user-provided UR
 ## ⚙️ Installation
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/link-collector.git
-   cd link-collector
+   git clone https://github.com/Soham-Kamble/Link-Collector.git
+   cd Link-Collector
 
 2. Create and activate a virtual environment:
    python -m venv venv
